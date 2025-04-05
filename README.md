@@ -18,6 +18,7 @@ This repo contains utilities that make working with Terraform easier in projects
 Run the install script to add the tools to your $PATH:
 
 ```bash
+chmod +x install.sh
 ./install.sh
 ```
 
