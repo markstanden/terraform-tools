@@ -1,0 +1,58 @@
+#!/bin/bash
+# tf - Terraform wrapper script that works from any directory
+# Move to $PATH to use as `tf init` | `tf plan` | `tf apply` etc.
+
+# The terraform IaC directory
+TF_SUBDIR="infrastructure/terraform"
+
+# The file holding required environment variable
+# (Az Tenant ID & Az Subscription ID)
+DOTENV=".env"
+
+
+# Validate command
+if [ -z "$1" ]; then
+  echo "Usage: tf [init|plan|apply] [additional args]"
+  exit 1
+fi
+
+COMMAND=$1
+shift  # Removes the first argument (command) but keeps the rest for the final command
+
+# Determine the project root
+find_project_root() {
+  local current_dir="$PWD"
+  while [[ "$current_dir" != "/" ]]; do
+    if [[ -d "$current_dir/$TF_SUBDIR" ]]; then
+      echo "$current_dir"
+      return 0
+    fi
+    current_dir="$(dirname "$current_dir")"
+  done
+  echo "Error: Could not find project root with $TF_SUBDIR directory" >&2
+  exit 1
+}
+
+PROJECT_ROOT=$(find_project_root)
+TF_DIR="$PROJECT_ROOT/$TF_SUBDIR"
+
+# Source environment variables if .env exists
+if [ -f "$PROJECT_ROOT/$DOTENV" ]; then
+  source "$PROJECT_ROOT/$DOTENV"
+fi
+
+# Auto-init for plan and apply commands if needed
+if [[ "$COMMAND" == "plan" || "$COMMAND" == "apply" ]]; then
+  if [ ! -d "$TF_DIR/.terraform" ]; then
+    echo "Terraform not initialized, running init first..."
+    terraform -chdir="$TF_DIR" init
+  fi
+fi
+
+# Run the specified terraform command
+terraform -chdir="$TF_DIR" $COMMAND "$@"
+
+# Add helpful message after plan
+if [[ "$COMMAND" == "plan" ]]; then
+  echo "Plan complete - run 'tf apply' to apply these changes"
+fi
