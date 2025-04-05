@@ -17,7 +17,7 @@ TOOLS_DIR_ABSOLUTE="$(pwd)"
 BIN_DIR="$TOOLS_DIR_ABSOLUTE/bin"
 
 # Make sure all scripts are executable
-chmod +x "$BIN_DIR"/*
+sudo chmod +x "$BIN_DIR"/*
 
 # Determine shell configuration file
 if [[ "$SHELL" == *"zsh"* ]]; then
