@@ -1,6 +1,6 @@
 # Terraform Tools
 
-Helpful scripts and tools for working with Terraform in a structured project environment.
+Reusable scripts and tools for working with Terraform across multiple projects.
 
 ## Overview
 
