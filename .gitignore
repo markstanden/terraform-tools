@@ -28,7 +28,7 @@ terraform.tfstate.backup
 # Logs
 *.log
 
-# User-specific customizations 
+# User-specific customizations
 user-config/
 
 # Testing artifacts
